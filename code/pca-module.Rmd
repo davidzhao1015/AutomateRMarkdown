@@ -1,0 +1,104 @@
+---
+title: "PCA Outcomes"
+author: "Xin (David) Zhao"
+date: "`r Sys.Date()`"
+output: md_document
+params:
+    group_1: "WT-NC"
+    group_2: "WT-HFD"
+    host: "Mice"
+    order: 1
+    pca_comp1: "30%"
+    pca_comp2: "12%"
+    f_value: "0.85366"  # "f-value" (as opposed to "f_value") can't be rendered properly for some reason!  
+    r_squared: "0.078652"
+    p_value: "0.457"
+--- 
+
+
+```{r setup, include = FALSE} 
+
+group1 <- params$group_1
+group2 <- params$group_2 
+
+# File paths to scores plots 
+scores_plot_path <- paste0("~/Desktop/Download_",group1, "_", group2, "/pca_score2d_0_dpi72.png")   
+
+# File paths to loading tables  
+loading_path <- paste0("~/Desktop/Download_",group1, "_", group2, "/pca_loadings.csv")  
+
+# File paths to metabolite names files 
+meta_name_path <- paste0("~/Desktop/Download_",group1, "_", group2, "/TMIC-02RX-metabolite-names.csv") 
+
+# File paths to exported csv 
+exported_file_path <- paste0("~/Desktop/Download_",group1, "_", group2, "/pca_loadings2.csv")  
+
+
+# Iteration order 
+iteration_order <- params$order 
+
+```
+
+
+```{r results='asis', echo=FALSE}
+if (iteration_order == 1) {
+    cat("\n## PCA\n")
+} else {
+    cat("\n")
+}
+```
+
+
+### `r params$group_1` vs `r params$group_2`  
+
+**Scores Plot of PCA**
+
+This figure shows a Principal Component Analysis (PCA) scores plot illustrating the variations in metabolite profiles of mice under `r params$group_1` and `r params$group_2` groups. Each point represents a sample, with clusters indicating separation or overlap between the two groups based on their metabolic profiles.
+
+The first and second principal components explain approximately `r params$pca_comp1` and `r params$pca_comp2` of the total variation in metabolites for mice under `r params$group_1` and `r params$group_2` groups.
+
+Each point represents a sample, with colors indicating different groups. The PERMANOVA test shows no significant difference in centroids between `r params$group_1` and `r params$group_2` groups (PERMANOVA F-value: `r params$f_value`; R-squared: `r params$r_squared`; p-value (based on 999 permutations): `r params$p_value`).
+
+```{r, echo=FALSE, fig.cap='', out.width='85%', fig.align='center'}
+
+knitr::include_graphics(scores_plot_path)
+
+```
+
+**Figure 5. PCA Scores Plot - Metabolite Profile Variations in `r params$host` under `r params$group_1` and `r params$group_2` groups**
+
+**Loadings of PCA**
+
+This table lists the PCA loadings for the top 20 metabolites contributing to the variation in metabolite profiles of mice under `r params$group_1` and `r params$group_2` groups. Higher loadings indicate greater influence of a metabolite on the principal components, highlighting the most significant contributors to the observed metabolic differences between the two groups.
+
+The original, full loading table can be found in the appendix, `r loading_path` 
+
+```{r echo=FALSE}
+
+pca_loadings_wtwt <- read.csv(loading_path)  
+
+names(pca_loadings_wtwt)[1] <- "metabolite" 
+meta_full_name <- read.csv(meta_name_path)  
+pca_loadings_wtwt <- pca_loadings_wtwt %>% left_join(meta_full_name[ ,c(1,2)], by="metabolite")  
+pca_loadings_wtwt <- pca_loadings_wtwt %>% select(metabolite, class, everything())  
+# Subset PC1-5 
+pca_loadings_wtwt2 <- pca_loadings_wtwt |> dplyr::select(metabolite: PC5) 
+
+# Order metabolites from large to small by PC1 absolute values 
+pca_loadings_wtwt2 <- pca_loadings_wtwt2[order(abs(pca_loadings_wtwt2$PC1), decreasing = TRUE), ]
+
+# Rename X to Metabolite 
+colnames(pca_loadings_wtwt2)[1] <- "Metabolites" 
+
+# Save as csv file 
+write.csv(pca_loadings_wtwt2, exported_file_path, row.names = FALSE) 
+
+# Top metabolites only 
+pca_loadings_wtwt3 <- pca_loadings_wtwt2 |> head(20)
+
+knitr::kable(pca_loadings_wtwt3, digits = 3, format = 'simple', align = 'l', row.names = FALSE, caption = '')
+
+```
+
+**Table 1. PCA Loadings for Metabolite Profile Variations in Mice under `r params$group_1` and `r params$group_2` groups**
+
