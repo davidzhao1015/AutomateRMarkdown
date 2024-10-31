@@ -22,16 +22,16 @@ group1 <- params$group_1
 group2 <- params$group_2 
 
 # File paths to scores plots 
-scores_plot_path <- paste0("~/Desktop/Download_",group1, "_", group2, "/pca_score2d_0_dpi72.png")   
+scores_plot_path <- paste0("../data/Download_",group1, "_", group2, "/pca_score2d_0_dpi72.png")   
 
 # File paths to loading tables  
-loading_path <- paste0("~/Desktop/Download_",group1, "_", group2, "/pca_loadings.csv")  
+loading_path <- paste0("../data/Download_",group1, "_", group2, "/pca_loadings.csv")  
 
 # File paths to metabolite names files 
-meta_name_path <- paste0("~/Desktop/Download_",group1, "_", group2, "/TMIC-02RX-metabolite-names.csv") 
+meta_name_path <- paste0("../data/Download_",group1, "_", group2, "/TMIC-02RX-metabolite-names.csv") 
 
 # File paths to exported csv 
-exported_file_path <- paste0("~/Desktop/Download_",group1, "_", group2, "/pca_loadings2.csv")  
+exported_file_path <- paste0("../data/Download_",group1, "_", group2, "/pca_loadings2.csv")  
 
 
 # Iteration order 
