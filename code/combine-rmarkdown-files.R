@@ -1,5 +1,6 @@
 library(rmarkdown)
 
+# Set the working directory to the location of the current R script
 if (requireNamespace("rstudioapi", quietly = TRUE) && rstudioapi::isAvailable()) {
   setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
   print(getwd())  # Confirm the change
@@ -33,13 +34,13 @@ for (n in 1:nrow(groups_collection2)) {
     
 }
 
-# ----------------------------------------
+# ---------------------------------------------
 
 # Combine multiple rmarkdown files
 
-# ---------------------------------------
+# ---------------------------------------------
 
-# Run the shell cat command (default shell) in R
+# Run the shell cat command in R
 
 system("cat pca_WT-NC_WT-HFD.md > combined_pca.md && echo >> combined_pca.md && cat pca_KO-NC_KO-HFD.md >> combined_pca.md")
 
