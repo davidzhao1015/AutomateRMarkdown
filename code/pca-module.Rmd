@@ -10,7 +10,7 @@ params:
     order: 1
     pca_comp1: "30%"
     pca_comp2: "12%"
-    f_value: "0.85366"  # "f-value" (as opposed to "f_value") can't be rendered properly for some reason!  
+    f_value: "0.85366"  
     r_squared: "0.078652"
     p_value: "0.457"
 --- 
